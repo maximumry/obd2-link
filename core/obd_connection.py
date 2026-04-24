@@ -7,9 +7,8 @@ class OBDConnection:
     def __init__(self):
         self.connection = obd.OBD()
         
-    def connect(self):
+    def connect(self, publish_callback=None):
         if self.connection.status() == OBDStatus.CAR_CONNECTED:
-            print(f"接続成功")
 
             # 計測開始
             start = time.perf_counter()
@@ -22,9 +21,17 @@ class OBDConnection:
 
                     print(f"エンジン回転数：{rpm}\n速度：{speed}\n水温：{coolant_temp}\nスロットル開度：{throttle_pos}")
 
+                    data = {
+                        "rpm": rpm,
+                        "speed": speed,
+                        "coolant_temp": coolant_temp,
+                        "throttle_pos": throttle_pos,
+                        "timestamp": time.time(),
+                        "device_id": "1",
+                        "trip_id": "1"
+                    }
                     time.sleep(.2)
-                    # if 60 <= time.perf_counter() - start:
-                    #     return True
+                    return data
                 except KeyboardInterrupt as e:
                     # プログラム終了の対応
                     return e
