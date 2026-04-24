@@ -5,6 +5,8 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+    "google-cloud-bigquery>=3.41.0",
+    "google-cloud-pubsub>=2.37.0",
     "obd>=0.7.3",
     "pyserial>=3.5",
 ]
