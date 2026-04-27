@@ -1,5 +1,6 @@
 from core.obd_connection import OBDConnection
 from core.pubsub_client import PubSubClient
+import time
 
 def main():
     pubsub_client = PubSubClient()
@@ -13,12 +14,16 @@ def main():
             pubsub_client.publish(car_data)
         elif isinstance(car_data, KeyboardInterrupt):
             print("プログラム終了")
+            break
         elif car_data == "Not Connected":
             print("接続失敗")
+            time.sleep(.5)
         elif car_data == "ELM Connected":
             print("接続出来たが、車両と未接続")
+            time.sleep(.5)
         elif car_data == "OBD Connected":
             print("車両とは繋がっているが、イグニッションがOFF")
+            time.sleep(.5)
 
 if __name__ == "__main__":
     main()
