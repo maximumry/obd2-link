@@ -1,6 +1,11 @@
 import time
 import obd
 from obd import OBDStatus
+import time
+import datetime
+
+# 日本時間のタイムゾーンを取得
+JST = datetime.timezone(datetime.timedelta(hours=9), "JST")
 
 class OBDConnection:
 
@@ -26,22 +31,22 @@ class OBDConnection:
                         "speed": speed,
                         "coolant_temp": coolant_temp,
                         "throttle_pos": throttle_pos,
-                        "timestamp": time.time(),
+                        "timestamp": datetime.datetime.now(JST).isoformat(),
                         "device_id": "1",
                         "trip_id": "1"
                     }
-                    time.sleep(.2)
+                    time.sleep(.3)
                     return data
                 except KeyboardInterrupt as e:
                     # プログラム終了の対応
                     return e
                 except AttributeError as e:
                     # 正常値が入らなかった時の対応
-                    time.sleep(.2)
+                    time.sleep(.3)
                     pass
                 except Exception as e:
                     # その他のエラーの対応
-                    time.sleep(.2)
+                    time.sleep(.3)
                     pass
         elif self.connection.status() == obd.OBDStatus.NOT_CONNECTED:
             return self.connection.status()

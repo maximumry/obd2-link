@@ -6,7 +6,7 @@ class PubSubClient:
     def __init__(self):
         try:
             # 環境変数の設定
-            os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/Users/kawaguchiryo/IdeaProjects/obd2_link/secretes/my-obd2link-stg-7e1ffe5dd1a2.json"
+            os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "./secretes/my-obd2link-stg-7e1ffe5dd1a2.json"
 
             # GCPのプロジェクトIDと、トピック名を指定
             PROJECT_ID = "my-obd2link-stg"
