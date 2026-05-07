@@ -1,3 +1,4 @@
+import asyncio
 from google.cloud import pubsub_v1
 import os
 import json
@@ -19,6 +20,10 @@ class PubSubClient:
         except Exception as e:
             print(e)
             pass
+
+    async def publish_async(self, car_data: dict):
+        await asyncio.to_thread(self.publish, car_data)
+
     def publish(self, car_data: dict):
         try:
             # JSON形式に変換

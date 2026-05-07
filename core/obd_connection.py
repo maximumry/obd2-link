@@ -1,7 +1,7 @@
+import asyncio
 import time
 import obd
 from obd import OBDStatus
-import time
 import datetime
 
 # 日本時間のタイムゾーンを取得
@@ -11,7 +11,10 @@ class OBDConnection:
 
     def __init__(self):
         self.connection = obd.OBD()
-        
+
+    async def connect_async(self):
+        return await asyncio.to_thread(self.connect)
+
     def connect(self, publish_callback=None):
         if self.connection.status() == OBDStatus.CAR_CONNECTED:
 

@@ -1,29 +1,30 @@
 from core.obd_connection import OBDConnection
 from core.pubsub_client import PubSubClient
-import time
+import asyncio
+from obd import OBDStatus
 
-def main():
+async def main():
     pubsub_client = PubSubClient()
     obd_connection = OBDConnection()
 
     while(True):
         # OBD2接続
-        car_data = obd_connection.connect()
+        car_data = await obd_connection.connect_async()
 
         if isinstance(car_data, dict):
-            pubsub_client.publish(car_data)
+            await pubsub_client.publish_async(car_data)
         elif isinstance(car_data, KeyboardInterrupt):
             print("プログラム終了")
             break
-        elif car_data == "Not Connected":
-            print("接続失敗")
-            time.sleep(.5)
-        elif car_data == "ELM Connected":
+        elif car_data == OBDStatus.NOT_CONNECTED:
+            print("OBD2に接続出来ていない")
+            await asyncio.sleep(.5)
+        elif car_data == OBDStatus.ELM_CONNECTED:
             print("接続出来たが、車両と未接続")
-            time.sleep(.5)
-        elif car_data == "OBD Connected":
+            await asyncio.sleep(.5)
+        elif car_data == OBDStatus.OBD_CONNECTED:
             print("車両とは繋がっているが、イグニッションがOFF")
-            time.sleep(.5)
+            await asyncio.sleep(.5)
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
