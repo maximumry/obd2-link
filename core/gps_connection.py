@@ -35,7 +35,6 @@ class GPSConnection:
                 self.socket.settimeout(5)
                 self.socket.connect((self.host, self.port))
                 self.socket.settimeout(1)
-                print("GPS接続成功")
                 return
             except (ConnectionRefusedError, TimeoutError, OSError) as e:
                 print(f"GPS接続失敗: {e}")
