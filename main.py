@@ -8,20 +8,21 @@ async def main():
     pubsub_client = PubSubClient()
     obd_connection = OBDConnection()
     gps_connection = GPSConnection()
-
-    # GPSのバックグラウンド受信タスクを開始
-    gps_task = asyncio.create_task(gps_connection.start_background_receiver())
+    await gps_connection.connect_async()
 
     try:
         while True:
             # OBD2接続
             car_data = await obd_connection.connect_async()
-            gps_data = gps_connection.get_gps_data()
-
+            
             if isinstance(car_data, dict):
-                if gps_data:
-                    car_data.update(gps_data)
-                    print(f"GPSデータ追加: {gps_data}")
+                # GPS接続
+                gps_data = await gps_connection.get_gps_data_async()
+                if gps_data is None:
+                    car_data["gps_data"] = None
+                    continue
+                car_data["gps_data"] = [gps_data.get("latitude"), gps_data.get("longitude")]
+
                 await pubsub_client.publish_async(car_data)
             elif isinstance(car_data, KeyboardInterrupt):
                 print("プログラム終了")
@@ -36,14 +37,8 @@ async def main():
                 print("車両とは繋がっているが、イグニッションがOFF")
                 await asyncio.sleep(.5)
     finally:
-        print("終了処理中...")
-        gps_connection.running = False
-        gps_connection.close()
-        gps_task.cancel()
-        try:
-            await gps_task
-        except asyncio.CancelledError:
-            pass
+        obd_connection.cancel()
+        gps_connection.cancel()
 
 if __name__ == "__main__":
     asyncio.run(main())

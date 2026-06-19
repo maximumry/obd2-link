@@ -36,9 +36,10 @@ class OBDConnection:
                         "throttle_pos": throttle_pos,
                         "timestamp": datetime.datetime.now(JST).isoformat(),
                         "device_id": "1",
-                        "trip_id": "1"
+                        "trip_id": "1",
+                        "cat_data": ""
                     }
-                    time.sleep(.3)
+
                     return data
                 except KeyboardInterrupt as e:
                     # プログラム終了の対応
@@ -57,3 +58,7 @@ class OBDConnection:
             return self.connection.status()
         elif self.connection.status() == obd.OBDStatus.OBD_CONNECTED:
             return self.connection.status()
+
+    def cancel(self):
+        if self.connection:
+            self.connection.close()
